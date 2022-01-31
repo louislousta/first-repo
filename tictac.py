@@ -38,6 +38,10 @@ def get_move(): #takes input in form tl/tm/etc and returns list index
             move_index = [2,2]
     return move_index
 
-while(True):
-    move = get_move()
-    print(move)
+def update_board(board,move,player):
+    board[move[0]][move[1]] = player
+    return board
+
+move = get_move()
+next_board = update_board(init_board,move,'X')
+render_board(next_board)
