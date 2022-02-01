@@ -12,7 +12,7 @@ def render_board(board):
         print()
 
 init_board = new_board()
-render_board(init_board)
+
 
 def get_move(): #takes input in form tl/tm/etc and returns list index
     move = input()
@@ -36,12 +36,36 @@ def get_move(): #takes input in form tl/tm/etc and returns list index
             move_index = [2,1]
         case 'br': 
             move_index = [2,2]
+        case _:
+            raise ValueError
     return move_index
 
 def update_board(board,move,player):
-    board[move[0]][move[1]] = player
+    if board[move[0]][move[1]] == None:
+        board[move[0]][move[1]] = player
+    else: 
+        raise ValueError
     return board
 
-move = get_move()
-next_board = update_board(init_board,move,'X')
-render_board(next_board)
+def win_con(board): #deal with this later
+    pass
+        
+player = 'X'
+while True:
+   
+    print(player, ': Your turn, make a move')
+    try:
+        move = get_move()
+    except: 
+        print("Not a valid move! Try 'tl' for top left, 'bm' for bottom middle, 'mm' for middle middle etc..")
+        continue
+    try:
+        next_board = update_board(init_board,move,player)
+    except:
+        print('Sorry, somebody already made that move! Try again.')
+        continue
+    
+    render_board(next_board)
+    if player != 'O':
+        player = 'O'
+    else: player = 'X'
