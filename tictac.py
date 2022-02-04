@@ -1,5 +1,5 @@
 # a tic tac toe game for two players 
-import sys
+import sys,random
 
 def new_board():
     board = [[None,None,None],[None,None,None],[None,None,None]]
@@ -62,8 +62,6 @@ def is_winner(board):
         if line[0] == line[1] and line[1] == line[2]:
             return line[0]
     
-
-
 init_board = new_board()        
 player = 'X'
 while True:
