@@ -1,4 +1,5 @@
 # a tic tac toe game for two players 
+import sys
 
 def new_board():
     board = [[None,None,None],[None,None,None],[None,None,None]]
@@ -10,9 +11,6 @@ def render_board(board):
         for j in range(3):
             print('|', board[i][j], '|', end = '')
         print()
-
-init_board = new_board()
-
 
 def get_move(): #takes input in form tl/tm/etc and returns list index
     move = input()
@@ -36,23 +34,40 @@ def get_move(): #takes input in form tl/tm/etc and returns list index
             move_index = [2,1]
         case 'br': 
             move_index = [2,2]
+        case 'q','quit':
+            sys.exit(0)
         case _:
             raise ValueError
     return move_index
 
 def update_board(board,move,player):
+    new_board = board
     if board[move[0]][move[1]] == None:
-        board[move[0]][move[1]] = player
+        new_board[move[0]][move[1]] = player
     else: 
         raise ValueError
-    return board
+    return new_board
+   
+def is_winner(board):
+    line_1 = [board[0][0],board[0][1],board[0][2]]
+    line_2 = [board[1][0],board[1][1],board[1][2]]
+    line_3 = [board[2][0],board[2][1],board[2][2]]
+    line_4 = [board[0][0],board[1][0],board[2][0]]
+    line_5 = [board[0][1],board[1][1],board[2][1]]
+    line_6 = [board[0][2],board[1][2],board[2][2]]
+    line_7 = [board[0][0],board[1][1],board[2][2]]
+    line_8 = [board[0][2],board[1][1],board[2][0]]
+    lines = [line_1,line_2,line_3,line_4,line_5,line_6,line_7,line_8]
+    for line in lines:
+        if line[0] == line[1] and line[1] == line[2]:
+            return line[0]
+    
 
-def win_con(board): #deal with this later
-    pass
-        
+
+init_board = new_board()        
 player = 'X'
 while True:
-   
+    
     print(player, ': Your turn, make a move')
     try:
         move = get_move()
@@ -66,6 +81,12 @@ while True:
         continue
     
     render_board(next_board)
+    winner = is_winner(next_board)
+    if winner == 'X' or winner == 'O':
+        break
+    init_board = next_board
     if player != 'O':
         player = 'O'
     else: player = 'X'
+
+print('Congratulations {w}! You win!'.format(w = winner))
