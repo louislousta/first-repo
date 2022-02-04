@@ -1,5 +1,6 @@
 # a tic tac toe game for two players 
 import sys,random
+from time import sleep
 
 def new_board():
     board = [[None,None,None],[None,None,None],[None,None,None]]
@@ -12,8 +13,8 @@ def render_board(board):
             print('|', board[i][j], '|', end = '')
         print()
 
-def get_move(): #takes input in form tl/tm/etc and returns list index
-    move = input()
+def get_move(move): #takes input in form tl/tm/etc and returns list index
+    
     move_index = list
     match move:
         case 'tl':
@@ -34,7 +35,7 @@ def get_move(): #takes input in form tl/tm/etc and returns list index
             move_index = [2,1]
         case 'br': 
             move_index = [2,2]
-        case 'q','quit':
+        case 'q':
             sys.exit(0)
         case _:
             raise ValueError
@@ -61,30 +62,84 @@ def is_winner(board):
     for line in lines:
         if line[0] == line[1] and line[1] == line[2]:
             return line[0]
-    
-init_board = new_board()        
-player = 'X'
+
+def ai_random(board):
+    while True:
+            move_int = random.randint(1,9)
+            match move_int:
+                case 1:
+                    move = 'tl'
+                case 2:
+                    move = 'tm'
+                case 3:
+                    move = 'tr'
+                case 4:
+                    move = 'ml'
+                case 5:
+                    move = 'mm'
+                case 6:
+                    move = 'mr'
+                case 7:
+                    move = 'bl'
+                case 8:
+                    move = 'bm'
+                case 9:
+                    move = 'br'
+            move_index = get_move(move)
+            if board[move_index[0]][move_index[1]] == None:
+                return move
+
+
+init_board = new_board()  
+print('Welcome to Tic Tac Toe, Choose X or O: ')      
 while True:
-    
-    print(player, ': Your turn, make a move')
-    try:
-        move = get_move()
-    except: 
-        print("Not a valid move! Try 'tl' for top left, 'bm' for bottom middle, 'mm' for middle middle etc..")
-        continue
-    try:
-        next_board = update_board(init_board,move,player)
-    except:
-        print('Sorry, somebody already made that move! Try again.')
-        continue
-    
-    render_board(next_board)
-    winner = is_winner(next_board)
-    if winner == 'X' or winner == 'O':
+    player = input()
+    player = player.upper()
+    if player == 'X':
+        ai_player = 'O'
         break
-    init_board = next_board
-    if player != 'O':
-        player = 'O'
-    else: player = 'X'
+    elif player == 'O':
+        ai_player = 'X'
+        break
+    else:
+        print('Sorry, Please enter X or O')
+ai_turn = False
+while True:
+    if ai_turn == False:
+        print(player, ': Your turn, make a move')
+        try:
+            move_raw = input()
+            move = get_move(move_raw)
+        except: 
+            print("Not a valid move! Try 'tl' for top left, 'bm' for bottom middle, 'mm' for middle middle etc..")
+            continue
+        try:
+            next_board = update_board(init_board,move,player)
+        except:
+            print('Sorry, somebody already made that move! Try again.')
+            continue
+        
+        render_board(next_board)
+        winner = is_winner(next_board)
+        if winner == 'X' or winner == 'O':
+            break
+        init_board = next_board
+        if ai_turn == False:
+            ai_turn = True
+            continue
+    elif ai_turn == True:
+        print()
+        print(ai_player,"'s turn.. Thinking..." )
+        print()
+        ai_move = ai_random(init_board)
+        move = get_move(ai_move)
+        next_board = update_board(init_board,move,ai_player)
+        render_board(next_board)
+        winner = is_winner(next_board)
+        if winner == 'X' or winner == 'O':
+            break
+        init_board = next_board
+        ai_turn = False
+        
 
 print('Congratulations {w}! You win!'.format(w = winner))
